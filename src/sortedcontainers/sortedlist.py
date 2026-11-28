@@ -1201,7 +1201,9 @@ class SortedList(MutableSequence):
         :return: new sorted list
 
         """
-        that = object.__new__(self.__class__)
+        if type(self) is not SortedList:
+            return self.__class__(self)
+        that = object.__new__(SortedList)
         that._len = self._len
         that._load = self._load
         that._lists = [sublist.copy() for sublist in self._lists]
@@ -2309,7 +2311,9 @@ class SortedKeyList(SortedList):
         :return: new sorted-key list
 
         """
-        that = object.__new__(self.__class__)
+        if type(self) is not SortedKeyList:
+            return self.__class__(self, key=self._key)
+        that = object.__new__(SortedKeyList)
         that._key = self._key
         that._len = self._len
         that._load = self._load

@@ -672,3 +672,28 @@ def test_check():
     slt._len = 5
     with pytest.raises(AssertionError):
         slt._check()
+
+
+def test_copy_subclass():
+    import copy
+    from sortedcontainers import SortedKeyList
+
+    class CustomSortedList(SortedList):
+        def __init__(self, iterable=None):
+            self.initialized = True
+            super().__init__(iterable)
+
+    sl = CustomSortedList([3, 1, 2])
+    assert sl.copy().initialized is True
+    assert copy.copy(sl).initialized is True
+    assert type(sl.copy()) is CustomSortedList
+
+    class CustomSortedKeyList(SortedKeyList):
+        def __init__(self, iterable=None, key=None):
+            self.initialized = True
+            super().__init__(iterable, key=key)
+
+    skl = CustomSortedKeyList([3, 1, 2], key=lambda x: -x)
+    assert skl.copy().initialized is True
+    assert copy.copy(skl).initialized is True
+    assert list(skl.copy()) == [3, 2, 1]

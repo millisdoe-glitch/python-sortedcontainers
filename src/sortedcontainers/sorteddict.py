@@ -300,7 +300,9 @@ class SortedDict(dict):
         :return: new sorted dict
 
         """
-        that = self.__class__.__new__(self.__class__)
+        if type(self) is not SortedDict:
+            return self.__class__(self._key, self.items())
+        that = SortedDict.__new__(SortedDict)
         dict.update(that, self)
         that._key = self._key
         that._list = self._list.copy()

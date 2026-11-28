@@ -582,3 +582,26 @@ def test_ior():
     temp2 = SortedDict(mapping[13:])
     temp1 |= temp2
     assert temp1 == dict(mapping)
+
+
+def test_copy_subclass():
+    import copy
+
+    class DefaultSortedDict(SortedDict):
+        def __init__(self, *args, **kwargs):
+            self.default_factory = list
+            super().__init__(*args, **kwargs)
+
+        def __missing__(self, key):
+            value = self.default_factory()
+            self[key] = value
+            return value
+
+    original = DefaultSortedDict({'a': [1]})
+    copied = original.copy()
+    assert type(copied) is DefaultSortedDict
+    assert copied['b'] == []
+
+    copied2 = copy.copy(original)
+    assert type(copied2) is DefaultSortedDict
+    assert copied2['b'] == []
